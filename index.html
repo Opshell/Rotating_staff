@@ -108,6 +108,7 @@
                     staffMan = 0;
                     this.days.forEach(day => {
                         let staffFlag = false;
+                        let debtFlag = false;
 
                         let oldDebt = this.debt;
                         let newDebt = [];
@@ -121,10 +122,13 @@
                                     // 如果輪到他
                                     if(!staffFlag && staffMan == key){
                                         // 如果不再欠裡面 添加
-                                        // if(!oldDebt.some(e => e == key)){
-                                            newDebt.push(key);
+                                        if(!oldDebt.some(e => e == key)){
+                                            // if(!debtFlag){ // 一次只添加一個欠
+                                                newDebt.push(key);
+                                                // debtFlag = true;
+                                            // }
                                             staffMan++;
-                                        // }
+                                        }
                                         this.members[key].schedule.push('sv');
                                     } else {
                                         if(oldDebt.some(e => e == key)){
@@ -136,11 +140,10 @@
                                 } else { //沒休假的話
                                     // 檢查欠值人員 如果有這個人就排入
                                     // if(!staffFlag && this.debt.length > 0 && this.debt.some(e => e == key)){
-                                    if(!staffFlag && oldDebt.length > 0){
-
-
+                                    if(!staffFlag && oldDebt.length > 0 && oldDebt[0] == key){ // 且是下一位欠的人
                                         this.members[oldDebt[0]].schedule.push('s'); // 排入值
-                                        this.debt.splice(0, 1);
+                                        oldDebt.splice(0, 1);
+
                                         // this.members[key].schedule.push('s'); // 排入值
                                         // this.debt = this.debt.filter(e => e != key); // 移除欠
 
@@ -157,23 +160,38 @@
                             }
                         }
 
-                        this.debt = oldDebt.concat(newDebt);
-
                         if(!staffFlag) { // 沒人排到班
+                            console.log(day, oldDebt.length);
                             let next = this.forEMember(day);
                             if(next != -1){
                                 this.members[next].schedule[day-1] = 's';
                             }
-                            console.log(day +' = ' + staffMan);
                         }
+
+                        this.debt = [...new Set(oldDebt.concat(newDebt))]; // 合併陣列後  取Unique
 
                         if(staffMan > this.members.length -1){
                             staffMan = 0;
                         }
                     });
                 },
-                forEMember: function (day){
+                forEMember: function (day){ // 復刷
                     let staffMan = 0;
+                    let tempWeight = 99; // 站存'欠'天數
+                    let weightMan = -1; // 抓做最少天的欠
+
+                    // 檢查權重 抓最小
+                    this.debt.forEach(e => {
+                        const day = this.members[e].schedule.filter(e => e == 's');
+
+                        if(tempWeight > day){
+                            tempWeight = day // 紀錄天數
+                            weightMan = e; // 紀錄天數人員
+                        }
+                    });
+                    if(weightMan != -1){
+                        return weightMan; // 如果有欠 拋出權重最低的人
+                    }
 
                     for (const key in this.members) {
                         if (objHOP(this.members, key)) {
@@ -183,21 +201,23 @@
                             if(member.holiday.some(e => e == day)){
                                 // 如果輪到他
                                 if( staffMan == key){
-                                    // 如果不再欠裡面 添加
                                     if(!this.debt.some(e => e == key)){
-                                        staffMan++;
-                                        // this.debt.push(key);
+                                        staffMan++; // 只負責遞增抓到下一人
+                                        // this.debt.push(key);(二刷不做欠的機制)
                                     }
-                                    this.members[key].schedule[day-1]= 'sv';
+                                    // this.members[key].schedule[day-1]= 'sv';
                                 }
                             } else { //沒休假的話
-                                // 檢查欠值人員 如果有這個人就排入
-                                if(this.debt.length > 0 && this.debt.some(e => e == key)){
-                                    this.debt = this.debt.filter(e => e != key); // 移除欠
-                                    return key;
-                                } else if(staffMan == key){ // 正常輪值
-                                    return key;
+                                if(!(member.schedule[day-1] == 's')){ // 如果前一天沒當過
+                                    // 檢查欠值人員 如果有這個人就排入\
+                                    if(this.debt.length > 0 && this.debt.some(e => e == key)){
+                                        this.debt = this.debt.filter(e => e != key); // 移除欠
+                                        return key;
+                                    } else if(staffMan == key){ // 正常輪值
+                                        return key;
+                                    }
                                 }
+
                             }
                         }
                     }
