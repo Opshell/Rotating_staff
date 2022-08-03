@@ -1,0 +1,66 @@
+<article class="overTimeBlock">
+    <header class="overTimeHead">
+        <i class="fa-solid fa-clock Icon"></i>
+        <h2 class="title">加班費申請</h2>
+    </header>
+
+    <section class="overTimeThead">
+        <div class="item date">日期</div>
+        <div class="item time">起訖時間<span>(00:00~23:30)</span></div>
+        <div class="item norOver">平日加班(時數)</div>
+        <div class="item time2">(1~2)hr</div>
+        <div class="item time4">(3~4)hr</div>
+        <div class="item time5">(5~)hr</div>
+        <div class="item holiOver">假日加班</div>
+        <div class="item oTol">加班換補休</div>
+        <div class="item contTitle">工作摘要</div>
+        <div class="item proNumber">工作代碼</div>
+        <div class="item proCont">內容概述</div>
+    </section>
+
+    <!-- v-for="(overTime) in overTimeList" -->
+    <section v-for="(overInfo) in overList" class="overTimeTbody">
+        <div class="item date">{{overInfo.date}}</div>
+        <div class="item ">
+            <time-picker format="hh:mm" clas="oInput" v-model="overInfo.over_sign_in" :disabled="a2pInfo.progress > 1 && overInfo.progress > 1"></time-picker>
+            <span class="separate">-</span>
+            <time-picker format="hh:mm" clas="oInput" v-model="overInfo.over_sign_out" :disabled="a2pInfo.progress > 1 && overInfo.progress > 1"></time-picker>
+        </div>
+        <div class="item time2">
+            <!-- <input class="oInput" v-if="overInfo.over_time_type == 1" type="text" v-model="overInfo.over_time_2" :disabled="a2pInfo.progress > 1"> -->
+            <div v-if="overInfo.over_time_type == 1" class="oInput">{{overInfo.over_time_2}}</div>
+        </div>
+        <div class="item time4">
+            <!-- <input class="oInput" v-if="overInfo.over_time_type == 1" type="text" v-model="overInfo.over_time_4" :disabled="a2pInfo.progress > 1"> -->
+            <div v-if="overInfo.over_time_type == 1" class="oInput">{{overInfo.over_time_4}}</div>
+        </div>
+        <div class="item time5">
+            <!-- <input class="oInput" v-if="overInfo.over_time_type == 1" type="text" v-model="overInfo.over_time_up" :disabled="a2pInfo.progress > 1"> -->
+            <div v-if="overInfo.over_time_type == 1" class="oInput">{{overInfo.over_time_up}}</div>
+        </div>
+        <div class="item holiOver">
+            <!-- <input class="oInput" v-if="overInfo.over_time_type == 2" type="text" v-model="overInfo.over_time_total" :disabled="a2pInfo.progress > 1"> -->
+            <div v-if="overInfo.over_time_type == 2" class="oInput">{{overInfo.over_time_total}}</div>
+        </div>
+        <div class="item oTol">
+            <input type="checkbox" v-model="overInfo.is_comp_time" :disabled="a2pInfo.progress > 1 && overInfo.progress > 1">
+        </div>
+        <div class="item proNumber">{{overInfo.project_number}}</div>
+        <div class="item proCont">
+            <textarea class="textarea" cols="30" rows="2" v-model="overInfo.reason" :disabled="a2pInfo.progress > 1 && overInfo.progress > 1"></textarea>
+        </div>
+    </section>
+
+    <!-- 合計 -->
+    <section class="overTimeTFoot">
+        <div class="item time">時數小計(小時)：</div>
+        <div class="item time2">{{a2pInfo.over2}}</div>
+        <div class="item time4">{{a2pInfo.over4}}</div>
+        <div class="item time5">{{a2pInfo.overUp}}</div>
+        <div class="item holiOver">{{a2pInfo.overH}}</div>
+        <div class="item oTol">備註：</div>
+        <div class="item proNumber">
+            <textarea class="textarea" cols="30" rows="2" v-model="a2pInfo.remark" :disabled="a2pInfo.progress > 1"></textarea>
+        </div>
+    </section>
+</article>

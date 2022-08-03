@@ -1,0 +1,4 @@
+<select @change="onChange" v-model="select">
+    <option value="">請選擇</option>
+    <option v-for="item in list" :value="item.unique_id" :selected="item.unique_id == select">{{item.title}}</option>
+</select>

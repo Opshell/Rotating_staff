@@ -1,0 +1,24 @@
+<section class="vTr leaveTbody">
+    <!-- 項目頭 -->
+    <div class="vTd title">
+        <a v-if="addTemp.trigger == false" href="javascript:;" class="Btn" @click="addLeave">
+            <i class="fa-solid fa-square-plus Icon"></i>新增假別
+        </a>
+        <vue-select v-else class="select" :list="holidays" v-model="addTemp.holiday"></vue-select>
+    </div>
+    <div class="vTdBox">
+        <template v-for="(dayInfo, day) in addTemp.days">
+            <div v-if="day != 'total'" class="vTd day holiday">
+                <input type="text" class="time leave" v-model="dayInfo.whours"  :disabled="a2pInfo.progress > 1">
+            </div>
+        </template>
+    </div>
+    <div class="vTd day end">
+        <div class="time rely">
+            <a v-if="addTemp.trigger == true" href="javascript:;" class="Btn" @click="creatLeave"> 確定 </a>
+        </div>
+        <div class="time over">
+            <a v-if="addTemp.trigger == true" href="javascript:;" class="Btn" @click="presetAddTemp"> 取消 </a>
+        </div>
+    </div>
+</section>

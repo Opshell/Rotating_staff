@@ -1,0 +1,10 @@
+
+<article class="notifyBlock" :class="[{act: notifyList.length != 0}]">
+    <ul class="notifyList">
+        <li v-for="(item, i) in notifyList" class="notify" :class="[{error: item.type=='error', warning: item.type=='warning', tips: item.type=='tips', success: item.type=='success'}]" :key="'notify-' + i">
+            <a href="javascript:;" class="Btn close" @click="removeNotify(i)"></a>
+            <h6 class="title" v-html="item.title"></h6>
+            <p class="text" v-html="item.content"></p>
+        </li>
+    </ul>
+</article>

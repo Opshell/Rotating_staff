@@ -1,0 +1,28 @@
+<section class="vTr projectTbody">
+    <!-- 項目頭 -->
+    <div class="vTd title">
+        <a v-if="addTemp.trigger == false" href="javascript:;" class="Btn" @click="adda2p">
+            <i class="fa-solid fa-square-plus Icon"></i>新增案件
+        </a>
+        <vue-select v-else class="select" :list="projectList" v-model="addTemp.project"></vue-select>
+    </div>
+    <div class="vTdBox">
+        <template v-for="(dayInfo, day) in addTemp.days">
+            <div v-if="day != 'total'" class="vTd day" :class="[{'workday': dayInfo.workday == 1, 'holiday': dayInfo.workday != 1}]">
+                <template v-if="dayInfo.workday == 1">
+                    <input type="text" class="time rely" v-model="dayInfo.rely_time">
+                    <input type="text" class="time over" v-model="dayInfo.over_time_total">
+                </template>
+                <input v-else type="text" class="time over" v-model="dayInfo.over_time_total">
+            </div>
+        </template>
+    </div>
+    <div class="vTd day end">
+        <div class="time rely">
+            <a v-if="addTemp.trigger == true" href="javascript:;" class="Btn" @click="creata2p"> 確定 </a>
+        </div>
+        <div class="time over">
+            <a v-if="addTemp.trigger == true" href="javascript:;" class="Btn" @click="presetAddTemp"> 取消 </a>
+        </div>
+    </div>
+</section>

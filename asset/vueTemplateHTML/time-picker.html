@@ -1,0 +1,16 @@
+<div class="vueTimePicker" :class="[clas, {picker: picker == 1}]" @blur="triggerPick(0)">
+    <input class="timeInput" type="text" :disabled="disabled" v-model="time" @focus="triggerPick(1)">
+    <div v-if="picker == 1 && !disabled" class="selectBox">
+        <select v-if="hh != ''" class="select" v-model="hh">
+            <option v-for="(hour) in hourList" :value="hour" :selected="hour == hh">{{hour}}</option>
+        </select>
+        <select v-if="mm != ''" class="select" v-model="mm">
+            <option v-for="(minute) in minuteList" :value="minute" :selected="minute == mm">{{minute}}</option>
+        </select>
+        <select v-if="ss != ''" class="select" v-model="ss">
+            <option v-for="(second) in secondList" :value="second" :selected="second == ss">{{second}}</option>
+        </select>
+    </div>
+    <a v-if="picker == 1" class="Btn confirm" @click="pick">確認</a>
+    <a v-if="picker == 1" class="Btn close" @click="triggerPick(0)"></a>
+</div>

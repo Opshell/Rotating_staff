@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="asset/css/stylesheet.css" rel="stylesheet">
+    <script src="asset/js/vue.js"></script>
+    <script src="asset/js/axios.js"></script>
+    <script src="asset/js/opshell-component.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="memberBox">
+            <header class="head">姓　名</header>
+            <div class="table">
+                <div v-for="(day) in days" class="td">{{day}}</div>
+            </div>
+        </div>
+        <div v-for="(member) in members" class="memberBox">
+            <header class="head">{{member.title}}</header>
+            <div class="table">
+                <div v-for="(day) in member.schedule" class="td" :class="day"></div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                events: new Vue(),
+                members: [
+                    {
+                        title: '郭雅如',
+                        holiday: [1, 2, 6, 7, 12, 13, 14, 15, 16 ,17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '邱毓雯',
+                        holiday: [1, 5, 11, 16, 21, 22, 27, 28],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '盧韋靜',
+                        holiday: [3, 9, 10, 14, 19, 24, 28, 31],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '莊佳瑜',
+                        holiday: [4, 7, 12, 13, 17, 23, 29, 30],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '姜瑞芸',
+                        holiday: [5, 10, 11, 16, 20, 21, 25, 31],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '江嘉欣',
+                        holiday: [1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '吳翊柔',
+                        holiday: [3, 4, 6, 7, 8, 12, 13, 14, 18, 19, 23, 26, 27, 28, 29, 30, 31],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '陳立安',
+                        holiday: [5, 6, 7, 10, 11, 12, 13, 14, 16, 17, 23, 24, 27, 28, 30],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }, {
+                        title: '江昱賢',
+                        holiday: [2, 6, 7, 9, 13, 14, 15, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+                        workday: 0,
+                        staff: 0,
+                        remain: 0,
+                        schedule: []
+                    }
+                ],
+                days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+                debt: [],
+            },
+            mounted: function() {
+                this.schedule();
+            },
+            methods: {
+                schedule: function (){
+                    staffMan = 0;
+                    this.days.forEach(day => {
+                        let staffFlag = false;
+
+                        let oldDebt = this.debt;
+                        let newDebt = [];
+
+                        for (const key in this.members) {
+                            if (objHOP(this.members, key)) {
+                                const member = this.members[key];
+
+                                // 檢查休假
+                                if(member.holiday.some(e => e == day)){
+                                    // 如果輪到他
+                                    if(!staffFlag && staffMan == key){
+                                        // 如果不再欠裡面 添加
+                                        // if(!oldDebt.some(e => e == key)){
+                                            newDebt.push(key);
+                                            staffMan++;
+                                        // }
+                                        this.members[key].schedule.push('sv');
+                                    } else {
+                                        if(oldDebt.some(e => e == key)){
+                                            this.members[key].schedule.push('sv');
+                                        } else {
+                                            this.members[key].schedule.push('v');
+                                        }
+                                    }
+                                } else { //沒休假的話
+                                    // 檢查欠值人員 如果有這個人就排入
+                                    // if(!staffFlag && this.debt.length > 0 && this.debt.some(e => e == key)){
+                                    if(!staffFlag && oldDebt.length > 0){
+
+
+                                        this.members[oldDebt[0]].schedule.push('s'); // 排入值
+                                        this.debt.splice(0, 1);
+                                        // this.members[key].schedule.push('s'); // 排入值
+                                        // this.debt = this.debt.filter(e => e != key); // 移除欠
+
+                                        staffFlag = true;
+                                    } else if(!staffFlag && staffMan == key){ // 正常輪值
+                                        staffMan = key;
+                                        this.members[key].schedule.push('s'); // 排入值
+                                        staffFlag = true;
+                                        staffMan++;
+                                    } else {
+                                        this.members[key].schedule.push('w'); // 正常上班
+                                    }
+                                }
+                            }
+                        }
+
+                        this.debt = oldDebt.concat(newDebt);
+
+                        if(!staffFlag) { // 沒人排到班
+                            let next = this.forEMember(day);
+                            if(next != -1){
+                                this.members[next].schedule[day-1] = 's';
+                            }
+                            console.log(day +' = ' + staffMan);
+                        }
+
+                        if(staffMan > this.members.length -1){
+                            staffMan = 0;
+                        }
+                    });
+                },
+                forEMember: function (day){
+                    let staffMan = 0;
+
+                    for (const key in this.members) {
+                        if (objHOP(this.members, key)) {
+                            const member = this.members[key];
+
+                            // 檢查休假
+                            if(member.holiday.some(e => e == day)){
+                                // 如果輪到他
+                                if( staffMan == key){
+                                    // 如果不再欠裡面 添加
+                                    if(!this.debt.some(e => e == key)){
+                                        staffMan++;
+                                        // this.debt.push(key);
+                                    }
+                                    this.members[key].schedule[day-1]= 'sv';
+                                }
+                            } else { //沒休假的話
+                                // 檢查欠值人員 如果有這個人就排入
+                                if(this.debt.length > 0 && this.debt.some(e => e == key)){
+                                    this.debt = this.debt.filter(e => e != key); // 移除欠
+                                    return key;
+                                } else if(staffMan == key){ // 正常輪值
+                                    return key;
+                                }
+                            }
+                        }
+                    }
+
+                    return -1;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

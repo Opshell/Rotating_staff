@@ -1,0 +1,4 @@
+<select @change="onChange" v-model="select">
+    <option value="">請選擇</option>
+    <option v-for="(month) in monthList" :value="month" :selected="month == select">{{month}}</option>
+</select>

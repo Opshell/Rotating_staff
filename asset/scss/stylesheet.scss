@@ -1,0 +1,194 @@
+$colorMain: #97C529;
+$colorSub: #111;
+
+$color-background: #52493A;
+$color-background-shadow: #312D21;
+
+$color-gren-hight: #D9E7C4;
+$color-gren-dark: #C9DE92;
+$color-blue-hight: #CCD9E1;
+$color-blue-dark: #B0C6D3;
+
+$colorBtn: #97C529;
+
+$colorRely: #2B5F18;
+$colorOver: #FD3203;
+
+$colorErro: #CD7272;
+$colorSucc: #4db15a;
+$colorWarr: #E99A2C;
+$colorInfo: #72b0cd;
+
+$fzBase:15px;
+$fzTitle:16px;
+$fzSubtit:18px;
+$fzContent:20px;
+
+// 基本字形
+%baseFont {
+    // color: $colorMain;
+    // fill: $colorMain;
+    font-size: $fzBase;
+    font-family: 'Arial', 'Noto Sans TC', '微軟正黑體', sans-serif;
+    -webkit-text-stroke: 0.1px;
+    letter-spacing: 1px;
+}
+
+$cubic-FiSo: cubic-bezier(.37, .99, .92, .96); //快進場緩停
+$cubic-SiRo: cubic-bezier(.31, 1.26, .19, 1.11); //快速回彈
+$cubic-SiMo: cubic-bezier(.3, 1, .94, 1.1); //緩進微彈
+
+// 區塊設定
+%pm0 {
+    margin: 0px;
+    padding: 0px;
+}
+
+$sh_sans: 'source-han-sans-traditional', '微軟正黑體', sans-serif; // 無襯線(思源黑體)
+$sh_serif:'source-han-serif-tc', serif; // 襯線(思源宋體)
+
+//google Font
+$nt_sans: 'Arial', 'Noto Sans TC', '微軟正黑體', sans-serif; //思源黑體
+$Roboto: 'Roboto'; //Roboto
+$RozhaOne: 'Rozha One';
+
+//RWD
+$rwd-1920: 1920px;
+$rwd-1600: 1600px;
+$rwd-1550: 1550px;
+$rwd-1300: 1300px;
+$rwd-1024: 1024px;
+$rwd-768: 768px;
+$rwd-500: 500px;
+$rwd-414: 414px;
+$rwd-320: 320px;
+@mixin setRwd($size) {
+    @media(max-width: $size) {
+        @content;
+    }
+}
+
+//Browser compatibility
+@mixin setBC($k, $v) {
+    -webkit-#{$k}: $v;
+    -moz-#{$k}: $v;
+    -ms-#{$k}: $v;
+    -o-#{$k}: $v;
+    #{$k}: $v;
+}
+
+@mixin setBack($rep:no-repeat, $pos:50% 50%, $siz:cover) {
+    background : {
+        repeat: $rep;
+        position: $pos;
+        size: $siz;
+    }
+}
+
+@mixin setSize($w:0, $h:0) {
+    width: $w;
+    height: $h;
+}
+
+@mixin setProportion($proportion: 100%, $bs: contain) {
+    // 等比例區塊
+    background-size: $bs;
+
+    &::before {
+        content: '';
+        display: block;
+        padding-top: $proportion;
+        @content;
+    }
+}
+
+// 文字不斷行變...
+@mixin setEllipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+// 分配字距justify
+@mixin setJustify() {
+    text-align: justify;
+    text-justify: inter-ideograph;
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 100%;
+    }
+}
+
+//Delay Animate
+@mixin setDelay($ty, $e, $tv, $btv: 0, $s: 1) {
+    @for $i from $s through $e {
+        &:nth-child(#{$i}) {
+            #{$ty}: #{$btv + $i * $tv}s;
+            @content;
+        }
+    }
+}
+
+@mixin setStr($el, $ty, $baseStr, $e, $attcStr: '', $s: 1) {
+    @for $i from $s through $e {
+        &:nth-child(#{$i})#{$el} {
+            #{$ty}:#{$baseStr}#{$i}#{$attcStr};
+            @content;
+        }
+    }
+
+    //EX:{
+    // @include setStr("::after", "background", "url('../image/contact/line'", 6, ".png')");
+    // }
+}
+
+// 設定進場：未進場樣式, 進場樣式, 動畫曲線(預設)
+@mixin setIntoView($basc, $show, $cubic: .85s $cubic-SiRo) {
+    @each $k, $v in $basc {
+        #{$k}: $v;
+    }
+    transition: $cubic;
+    &.animation {
+
+        @each $k,
+        $v in $show {
+            #{$k}: $v;
+        }
+
+        @content;
+    }
+}
+
+/** 設定分隔斜線
+ * @param parent width
+ * @param parent height
+ * @param $topColor // 切分顏色1
+ * @param $bottomColor // 切分顏色2
+ * @Dom parent() > div(.slash) > child1, child2
+ */
+@mixin setSlash($width, $height, $topColor, $bottomColor, $padding: 2px){
+    position: flex; // 讓裡面的兩個子容器絕對定位
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    @include setSize($width, $height);
+    box-sizing: border-box;
+    padding: $padding;
+    &::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        @include setSize(0, 0);
+        border-top: $height $topColor solid; // 上邊框寬度等於格子高度
+        border-left: $width $bottomColor solid; // 左邊框寬度等於格子寬度
+    }
+    &:nth-child(1){ align-self: flex-start; }
+    &:nth-child(2){ align-self: flex-end; }
+}
+
+@import 'base'; // 全域基礎元件設定
+@import 'vueComponent'; // Vue組件設定
+// 該案件客製化樣式
+@import 'main';
+@import 'responsive';

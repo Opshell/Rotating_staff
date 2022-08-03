@@ -1,0 +1,134 @@
+.vueTimePicker{
+    position: relative;
+    @include setSize(100%, 100%);
+
+    .timeInput{
+        @include setSize(100%, 100%);
+        box-sizing: border-box;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .selectBox{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        @include setSize(100%, 100%);
+        z-index: 1;
+        .select {
+            border: 1px solid #E7ECEE;
+            @include setSize(100%, 100%);
+            + .select{ margin: 0 0 0 2px; }
+        }
+    }
+
+    .confirm {
+        @include setSize(100%, 20px);
+        margin: 5px 0 0 0;
+        font-size: 14px;
+        z-index: 1;
+    }
+    .close{
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        margin: 0;
+        z-index: 1;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -7px;
+        left: -7px;
+        background: rgba(100, 100, 100, .8);
+        @include setSize(calc(100% + 14px), calc(100% + 38px));
+        border-radius: 5px;
+        transition: .15s $cubic-FiSo;
+        opacity: 0;
+        z-index: -1;
+    }
+
+    &.picker{
+        opacity: 1;
+        z-index: 2;
+        &::before {
+            opacity: 1;
+            z-index: 1;
+        }
+    }
+}
+
+/** ops-notify */
+.notifyBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    @include setSize(100%, 100%);
+    padding: 40px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: .25s $cubic-FiSo;
+    transform-origin: 50% 50%;
+    transform: translate3d(-50%, -50%, 0);
+    z-index: -10;
+    &::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, .15);
+        @include setSize(100%, 100%);
+        backdrop-filter: blur(3px);
+    }
+    &.act{
+        opacity: 1;
+        z-index: 10;
+    }
+
+    .notifyList{
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 350px;
+        max-height: 90vh;
+    }
+
+    .notify {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background: $colorMain;
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        border: 3px solid #eee;
+        box-shadow: 0 0 5px 1px rgba(0, 0, 0, .15);
+        margin: 0 0 15px;
+        color: #eee;
+        .close {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+        .title {
+            font-size: 20px;
+            margin: 0 0 5px;
+        }
+        .text { font-size: 16px; }
+
+        &.error { background: $colorErro; }
+        &.warning { background: $colorWarr; }
+        &.tips { background: $colorInfo; }
+        &.success { background: $colorSucc; }
+    }
+}
