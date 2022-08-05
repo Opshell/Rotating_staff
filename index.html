@@ -99,12 +99,43 @@
                 ],
                 days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
                 debt: [],
+                fill: [],
+                tempFill: []
             },
             mounted: function() {
-                this.schedule();
+                this.filling();
+                this.fix();
+                // this.schedule();
             },
             methods: {
-                schedule: function (){
+                // 填充預設值星
+                filling: function() {
+                    let i = 0;
+                    this.days.forEach(day => {
+                        this.fill.push(i);
+                        i++;
+                        if(i > this.members.length - 1){
+                            i = 0;
+                        }
+                    });
+                },
+                // 配合休假調整
+                fix: function(){
+                    this.days.forEach((day, i) => {
+                        const mKey = this.fill[i];
+                        let tempFill = [];
+
+                        this.carry(mKey);
+                    });
+                },
+                carry: function(member) {
+                    if(this.members[mKey].holiday.some(e => e== day)){ // 本來剛上班的人有休假
+                        this.tempFill.push(this.fill[0])
+                        this.fill.splice(0, 1); // 移除最前面一個
+
+                    }
+                },
+                schedule: function() {
                     staffMan = 0;
                     this.days.forEach(day => {
                         let staffFlag = false;
@@ -175,7 +206,7 @@
                         }
                     });
                 },
-                forEMember: function (day){ // 復刷
+                forEMember: function(day) { // 復刷
                     let staffMan = 0;
                     let tempWeight = 99; // 站存'欠'天數
                     let weightMan = -1; // 抓做最少天的欠
